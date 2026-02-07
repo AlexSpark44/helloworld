@@ -1,0 +1,21 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: shopping-cart
+
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/cartdb}
+    username: ${DB_USER:cart}
+    password: ${DB_PASSWORD:cart}
+
+  flyway:
+    enabled: true
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect

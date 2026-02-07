@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Cart UI</title></head>
+<body>
+<h1>Cart UI (GitHub Pages)</h1>
+
+<label>API Base URL:
+  <input id="base" size="55" placeholder="https://your-backend.example.com">
+</label>
+<br><br>
+<button onclick="hello()">GET /api/hello</button>
+<button onclick="getCart()">GET /api/cart</button>
+<button onclick="putFresh()">PUT item (fresh)</button>
+<button onclick="putStale()">PUT item (stale -> 409)</button>
+
+<pre id="out"></pre>
+
+<script>
+let last = null;
+let stale = null;
+const userId = 'u1';
+const sku = 'ABC';
+
+const base = () => document.getElementById('base').value.replace(/\/$/, '');
+const out = (s) => document.getElementById('out').textContent = s;
+
+async function hello(){
+  const r = await fetch(base() + '/api/hello');
+  out(`HTTP ${r.status}\n` + JSON.stringify(await r.json(), null, 2));
+}
+
+async function getCart(){
+  const r = await fetch(base() + '/api/cart', { headers: { 'X-User-Id': userId }});
+  const j = await r.json();
+  if (stale === null) stale = j.version;
+  last = j.version;
+  out(JSON.stringify({lastVersion:last, staleVersion:stale, cart:j}, null, 2));
+}
+
+async function putWithVersion(v){
+  const r = await fetch(base() + `/api/cart/items/${sku}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-User-Id': userId,
+      'If-Match-Version': String(v)
+    },
+    body: JSON.stringify({quantity: 2})
+  });
+  const text = await r.text();
+  out(`HTTP ${r.status}\n\n${text}`);
+  if (r.status === 200) await getCart();
+}
+
+async function putFresh(){
+  if (last === null) await getCart();
+  return putWithVersion(last);
+}
+
+async function putStale(){
+  if (stale === null) await getCart();
+  return putWithVersion(stale);
+}
+</script>
+</body>
+</html>
