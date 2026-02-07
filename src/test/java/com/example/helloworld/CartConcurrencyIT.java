@@ -21,7 +21,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers
 @SpringBootTest
 @AutoConfigureMockMvc
-class CartIntegrationTest {
+class CartConcurrencyIT {
   @Container
   static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16-alpine");
 

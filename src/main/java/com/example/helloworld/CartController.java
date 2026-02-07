@@ -4,8 +4,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.util.List;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,11 +21,6 @@ public class CartController {
 
   public CartController(CartService cartService) {
     this.cartService = cartService;
-  }
-
-  @GetMapping("/hello")
-  public HelloResponse hello() {
-    return new HelloResponse("Hello World", "shopping-cart", "UP");
   }
 
   @GetMapping("/cart")
@@ -54,9 +47,6 @@ public class CartController {
     return CartResponse.from(cartService.deleteItem(userId, sku, ifMatchVersion));
   }
 
-  public record HelloResponse(String message, String service, String status) {
-  }
-
   public record UpdateItemRequest(@NotNull @Min(1) Integer quantity) {
   }
 
@@ -73,12 +63,5 @@ public class CartController {
           .toList();
       return new CartResponse(cart.getId(), cart.getUserId(), cart.getVersion(), items);
     }
-  }
-}
-
-@SpringBootApplication
-class ShoppingCartApplication {
-  public static void main(String[] args) {
-    SpringApplication.run(ShoppingCartApplication.class, args);
   }
 }

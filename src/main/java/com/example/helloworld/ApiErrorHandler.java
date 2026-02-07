@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class ErrorHandler {
+public class ApiErrorHandler {
   @ExceptionHandler(VersionConflictException.class)
   public ResponseEntity<Map<String, Object>> handleVersionConflict(VersionConflictException ex) {
     Map<String, Object> body = Map.of(
